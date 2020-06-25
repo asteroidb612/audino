@@ -26,19 +26,31 @@ parser.add_argument(
     help="Reference transcription associated with the data",
     default=None,
 )
-parser.add_argument("--host", type=str, help="Host of service", default=None)
+parser.add_argument("--host",
+        type=str,
+        help="Host of service",
+        default=None
+)
 parser.add_argument(
     "--is_marked_for_review",
     type=bool,
     help="Whether datapoint should be marked for review",
     default=False,
 )
-parser.add_argument("--port", type=int, help="Port to make request to", default=80)
+parser.add_argument("--port",
+        type=int,
+        help="Port to make request to",
+        default=80
+)
+parser.add_argument("--key",
+        type=str,
+        help="API key to upload to",
+        default=""
+)
 
 args = parser.parse_args()
 
-api_key = os.getenv("API_KEY", None)
-headers = {"Authorization": api_key}
+headers = {"Authorization": args.key}
 
 audio_path = Path(args.audio_file)
 audio_filename = audio_path.name
@@ -62,7 +74,7 @@ values = {
 
 print("Creating datapoint")
 response = requests.post(
-    f"http://{args.host}:{args.port}/api/data", files=file, data=values, headers=headers
+    "http://{}:{}/api/data".format(args.host, args.port), files=file, data=values, headers=headers
 )
 if response.status_code == 200:
     print("Datapoint created!")
